@@ -4,7 +4,7 @@ import os
 
 
 class Logger:
-    def __init__(self, title="", verbose=True):
+    def __init__(self, run_folder="./", title="", verbose=True):
         # create logger
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.INFO)  # setting level
@@ -12,7 +12,7 @@ class Logger:
 
         # create file handler
         start_time = time.strftime('%y-%m-%d-%H%M', time.localtime(time.time()))
-        log_path = os.path.join(os.getcwd(), 'logs', title)  # setting path for logfile 设置日志文件名称
+        log_path = os.path.join(run_folder, 'logs', title)  # setting path for logfile 设置日志文件名称
         if not os.path.exists(log_path):
             os.makedirs(log_path)
         log_name = os.path.join(log_path, start_time + '.log')

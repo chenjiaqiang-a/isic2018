@@ -16,7 +16,8 @@ class ISIC2018Dataset(data.Dataset):
         img_path(str): image folder of ISIC 2018.
         transform: image transform option.
     """
-    def __init__(self, csv_file_path: str, img_dir: str, transform=None, target_transform=None, **kwargs):
+    def __init__(self, csv_file_path: str, img_dir: str,
+                 transform=None, target_transform=None, **kwargs):
         super(ISIC2018Dataset, self).__init__(**kwargs)
 
         self.img_dir = img_dir
@@ -32,6 +33,7 @@ class ISIC2018Dataset(data.Dataset):
 
         self.img_names = list(df['image'])
         self.targets = list(arr.argmax(axis=1))
+        self.categories = [*self.target_to_label]
 
     def __len__(self):
         return len(self.img_names)
