@@ -143,7 +143,7 @@ def _to_numpy(data):
 
 
 class Evaluation:
-    def __init__(self, model, data_loader=None, device=_device, categories=None):
+    def __init__(self, model=None, data_loader=None, device=_device, categories=None):
         self.model = model
         self.data_loader = data_loader
         self.device = device
@@ -154,31 +154,41 @@ class Evaluation:
             data_loader = self.data_loader
 
         if data_loader is None:
-            raise Exception("No data loader is passed in, \
-            you need to pass a data loader before make predictions.")
+            raise Exception("No data loader is passed in, "
+                            "you need to pass a data loader before make predictions.")
         return data_loader
+
+    def _check_model(self, model):
+        if model is None:
+            model = self.model
+
+        if model is None:
+            raise Exception("No model is passed in, "
+                            "you need to pass a model before make predictions")
 
     def predict(self, x):
         pred = predict(self.model.to(self.device), x.to(self.device))
         return pred
 
-    def get_predictions(self, data_loader=None):
+    def get_predictions(self, model=None, data_loader=None):
+        model = self._check_model(model)
         data_loader = self._check_loader(data_loader)
 
-        preds, targets = get_predictions(self.model, data_loader, self.device)
+        preds, targets = get_predictions(model, data_loader, self.device)
         return preds, targets
 
     def probable(self, x):
         prob = probable(self.model.to(self.device), x.to(self.device))
         return prob
 
-    def get_probabilities(self, data_loader=None):
+    def get_probabilities(self, model=None, data_loader=None):
+        model = self._check_model(model)
         data_loader = self._check_loader(data_loader)
 
-        probs, targets = get_probabilities(self.model, data_loader, self.device)
+        probs, targets = get_probabilities(model, data_loader, self.device)
         return probs, targets
 
-    def evaluate(self, metric="accuracy", data_loader=None):
+    def evaluate(self, metric="accuracy", model=None, data_loader=None):
         """
         The main method in class Evaluation, to calculate multiple metric.
 
@@ -187,12 +197,13 @@ class Evaluation:
         _pred_based = ["acc", "accuracy", "balanced_accuracy", "b_acc", "precision", "recall",
                        "confusion_matrix", "c_matrix"]
         _prob_based = ["roc_auc", "auc", "roc_curves"]
+        :param model: (Model, default=None) the model to be used, if None, use model in __init__
         :param data_loader: (DataLoader, default=None) the data iter to be used, if None, use data_loader in __init__
 
         :return: (adarray/dict) the result
         """
-        preds, targets = self.get_predictions(data_loader)
-        probs, t_probs = self.get_probabilities(data_loader)
+        preds, targets = self.get_predictions(model, data_loader)
+        probs, t_probs = self.get_probabilities(model, data_loader)
         preds = _to_numpy(preds)
         targets = _to_numpy(targets)
         probs = _to_numpy(probs)
@@ -217,8 +228,8 @@ class Evaluation:
             raise TypeError(f"the metric arg should be str or list of str, \
             but received {type(metric)}")
 
-    def get_report(self, data_loader=None):
-        preds, targets = self.get_predictions(data_loader)
+    def get_report(self, model=None, data_loader=None):
+        preds, targets = self.get_predictions(model, data_loader)
         preds = _to_numpy(preds)
         targets = _to_numpy(targets)
         report = get_report(preds, targets, self.categories)

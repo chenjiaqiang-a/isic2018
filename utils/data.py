@@ -25,7 +25,7 @@ class ISIC2018Dataset(data.Dataset):
         self.target_trans = target_transform
 
         df = pd.read_csv(csv_file_path)
-        self.target_to_label = list(df.columns.values())[1:]
+        self.target_to_label = list(df.columns.values)[1:]
         self.label_to_target = {
             label: target for target, label in enumerate(self.target_to_label)
         }

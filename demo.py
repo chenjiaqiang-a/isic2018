@@ -8,11 +8,11 @@ from utils import ISIC2018Dataset, save_model, Logger, Evaluation, plot_confusio
 
 RUN_FOLDER = "./demo"
 BATCH_SIZE = 32
-NUM_WORKERS = 0
+NUM_WORKERS = 4
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 EPOCHS = 10
-LEARNING_RATE = 0.005
+LEARNING_RATE = 0.0005
 WEIGHT_DECAY = 0.2
 
 if not os.path.exists(RUN_FOLDER):
