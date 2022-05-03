@@ -49,8 +49,9 @@ def get_probabilities(model, data_loader, device=_device):
     probs = []
     targets = []
     for x, y in data_loader:
-        probs.append(probable(model, x.to(device)))
-        targets.append(F.one_hot(y.to(device), num_classes=x.shape[-1]))
+        prob = probable(model, x.to(device))
+        probs.append(prob)
+        targets.append(F.one_hot(y.to(device), num_classes=prob.shape[-1]))
 
     return torch.cat(probs, dim=-2), torch.cat(targets, dim=-2)
 
@@ -165,6 +166,7 @@ class Evaluation:
         if model is None:
             raise Exception("No model is passed in, "
                             "you need to pass a model before make predictions")
+        return model
 
     def predict(self, x):
         pred = predict(self.model.to(self.device), x.to(self.device))

@@ -1,30 +1,37 @@
 import os
+import warnings
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from net import resnet18
-from utils import ISIC2018Dataset, save_model, Logger, Evaluation, plot_confusion_matrix, plot_roc_curves
+from utils import ISIC2018Dataset, save_model, Logger, Evaluation, plot_confusion_matrix, plot_roc_curves, plot_losses
+warnings.filterwarnings('ignore')
 
+# 参数设置
 RUN_FOLDER = "./demo"
 BATCH_SIZE = 32
 NUM_WORKERS = 4
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-EPOCHS = 40
+EPOCHS = 100
 LEARNING_RATE = 0.0005
 WEIGHT_DECAY = 0.2
 
 if not os.path.exists(RUN_FOLDER):
     os.makedirs(RUN_FOLDER)
+    os.makedirs(os.path.join(RUN_FOLDER, "images"))
+    os.makedirs(os.path.join(RUN_FOLDER, "models"))
+
 LOGGER = Logger(RUN_FOLDER, "demo")
+LOGGER.info("isic2018 demo run by chen")
 
 # 数据预处理
 train_trans = transforms.Compose([
     transforms.CenterCrop((450, 450)),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
-    transforms.Resize((244, 244)),
+    transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                          std=[0.229, 0.224, 0.225])
@@ -32,7 +39,7 @@ train_trans = transforms.Compose([
 
 test_trans = transforms.Compose([
     transforms.CenterCrop((450, 450)),
-    transforms.Resize((244, 244)),
+    transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                          std=[0.229, 0.224, 0.225])
@@ -119,6 +126,11 @@ for epoch in range(EPOCHS):
     LOGGER.info("Epoch {:03d} --- train loss: {:.4f} train acc: {:.4f}\ttest loss: {:.4f} test acc: {:.4f}".format(
         epoch+1, train_l[-1], train_acc[-1], test_l[-1], test_acc[-1]
     ))
+
+plot_losses([train_l, train_acc, test_l, test_acc],
+            title="loss and acc",
+            legend=["train loss", "train acc", "test loss", "test acc"],
+            filename=os.path.join(RUN_FOLDER, "images", "loss.png"))
 
 # 保存模型
 save_model(model=net, path=os.path.join(RUN_FOLDER, "models"))
