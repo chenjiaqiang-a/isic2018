@@ -34,6 +34,7 @@ class ISIC2018Dataset(data.Dataset):
         self.img_names = list(df['image'])
         self.targets = list(arr.argmax(axis=1))
         self.categories = [*self.target_to_label]
+        self.num_classes = len(self.target_to_label)
 
     def __len__(self):
         return len(self.img_names)

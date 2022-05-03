@@ -11,7 +11,7 @@ BATCH_SIZE = 32
 NUM_WORKERS = 4
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-EPOCHS = 10
+EPOCHS = 40
 LEARNING_RATE = 0.0005
 WEIGHT_DECAY = 0.2
 
@@ -60,7 +60,7 @@ test_iter = DataLoader(test_dataset,
                        num_workers=NUM_WORKERS)
 
 # 模型准备
-net = resnet18()
+net = resnet18(num_classes=train_dataset.num_classes)
 net = net.to(DEVICE)
 loss_fn = nn.CrossEntropyLoss(reduction='sum')
 optim = torch.optim.Adam(net.parameters(),

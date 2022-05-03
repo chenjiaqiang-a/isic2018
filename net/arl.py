@@ -186,7 +186,3 @@ def arlnet50(pretrained=False, **kwargs):
         model_dict.update(pretrained_dict)
         model.load_state_dict(model_dict)
     return model
-
-
-if __name__ == '__main__':
-    model = arlnet50(pretrained=True)
