@@ -54,7 +54,7 @@ class ISIC2018Dataset(data.Dataset):
     def count_samples(self) -> list:
         """ count sample_nums """
         counter = Counter(self.targets)
-        class_nums = [(self.target_to_label[target], num) for target, num in counter.items()]
+        class_nums = [(label, counter[target]) for target, label in enumerate(self.target_to_label)]
         return class_nums
 
     def to_targets(self, label_list: list) -> list:

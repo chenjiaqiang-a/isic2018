@@ -1,8 +1,10 @@
 import torch
 import torch.nn as nn
+import torch.utils.model_zoo as model_zoo
 
-model_paths = {
-    'resnet50': 'model/resnet50-19c8e357.pth'
+model_urls = {
+    'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
+    'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
 }
 
 
@@ -203,7 +205,7 @@ class ResNet(nn.Module):
 def _resnet(arch, block, layers, pretrained, **kwargs):
     model = ResNet(block, layers, **kwargs)
     if pretrained:
-        state_dict = torch.load(model_paths[arch])
+        state_dict = model_zoo.load_url(model_urls[arch])
         remove_keys = []
         for key in state_dict.keys():
             if "fc" in key:
@@ -226,7 +228,7 @@ def resnet18(pretrained=False, **kwargs):
                    **kwargs)
 
 
-def resnet50(pretrained=True, **kwargs):
+def resnet50(pretrained=False, **kwargs):
     r"""ResNet-50 model from
     `"Deep Residual Learning for Image Recognition" <https://arxiv.org/pdf/1512.03385.pdf>`_
 
