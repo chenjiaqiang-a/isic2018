@@ -29,14 +29,12 @@ def draw_samples(images, labels, nrows=2, ncols=3, title=None):
         title (str, optional): title.
         dpi (int): dpi for plotting
     """
-    fig, axes = plt.subplots(nrows, ncols, facecolor='w', dpi=100)
+    fig, axes = plt.subplots(nrows, ncols, figsize=(ncols*4, nrows*3), facecolor='w', dpi=100)
 
     for (ax, image, label) in zip(axes.flat, images, labels):
         ax = draw_image(image, label, ax)
 
     fig.suptitle(title)
-    fig.tight_layout = True
-    fig.subplots_adjust(top=0.85, hspace=0.2)
     return fig, axes
 
 
@@ -123,6 +121,7 @@ def plot_losses(losses, title="", legend=None, filename="losses.png"):
         plt.plot(l, label=legend[i] if legend else None)
     plt.xlabel("epochs")
     plt.ylabel("loss")
+    plt.ylim([0.0, 1.1])
     plt.title(title)
     plt.legend(loc="best")
     plt.savefig(filename)
