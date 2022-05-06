@@ -1,5 +1,6 @@
 # isic2018
-神经网络课程设计实验代码，基于isic2018数据集
+神经网络课程设计实验代码，基于isic2018数据集，由小组成员分别完成过拟合、类别倾斜、脏标签三个方面的实验。<br/>
+在PyTorch框架下，该项目包括一些辅助的模块，提供了数据集处理、日志、评估、基础模型、可视化等功能，方便小组成员在实验中使用。
 
 ### File List
 ```
@@ -21,15 +22,22 @@
 +---utils
 |   +---__init__.py
 |   +---data.py             # 数据集
+|   +---evaluation.py       # 评估
 |   +---logger.py           # 日志
-|   \---model.py            # 模型和参数保存及加载
-\---demo.py
+|   +---model.py            # 模型和参数保存及加载
+|   +---visualize.py        # 可视化
++---ex1     # 实验1相关代码
++---ex2     # 实验2相关代码
++---ex3     # 实验3相关代码
++---ex4     # 实验4相关代码
++---ex5     # 实验5相关代码
+\---demo.py                 # 训练示例
 ```
 
 ### Dataset
 [ISIC2018 Data](https://challenge.isic-archive.com/data/)
 > 下载 ISIC2018 Task3 对应的各个数据集，解压并把对应的文件放入文件夹`/data/ISIC2018`下。<br/>
-> 由于该数据集的测试集没有 Ground Truth，因此从训练集分出1/4作为测试集，请运行 `/data/split_data.py` 脚本拆分数据，
+> 由于该数据集的测试集没有 Ground Truth，因此从训练集分出`1/5`作为测试集，请运行 `/data/split_data.py` 脚本拆分数据，
 >运行后会生成 `Test_GroundTruth.csv` 和 `Train_GroundTruth.csv` 两个文件，分别代表拆分后测试机和训练集的 Ground Truth。
 >(可以通过修改脚本改变拆分的比例)
 ```shell script
@@ -51,7 +59,7 @@ wget https://isic-challenge-data.s3.amazonaws.com/2018/ISIC2018_Task3_Test_Input
 1. 过拟合
     - ex1
 2. 类别倾斜
-    - ex2
+    - ex2: 尝试使用在线难样本挖掘（OHEM）解决类别倾斜的问题
     - ex3
 3. 脏标签
     - ex4
@@ -66,5 +74,5 @@ git clone https://github.com/chenjiaqiang-a/isic2018.git
 # convert .ipynb to .py
 jupyter nbconvert --to script <.ipynb file name>
 # run in backend
-nphup python <.py file name> &
+nohup python <.py file name> &
 ```
