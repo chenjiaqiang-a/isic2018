@@ -132,6 +132,7 @@ for epoch in range(EPOCHS):
         loss_sum = 0
         model.eval()
         for X, y in valid_iter:
+            optimizer.zero_grad()
             num_data += X.shape[0]
             X, y = X.to(DEVICE), y.to(DEVICE)
             with torch.no_grad():

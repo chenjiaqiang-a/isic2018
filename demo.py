@@ -85,6 +85,7 @@ for epoch in range(EPOCHS):
     losses = 0
     net.train()
     for X, y in train_iter:
+        optim.zero_grad()
         num_data += X.shape[0]
         X, y = X.to(DEVICE), y.to(DEVICE)
 

@@ -101,6 +101,7 @@ for epoch in range(EPOCHS):
     loss_sum = 0
     model.train()
     for X, y in train_iter:
+        optimizer.zero_grad()
         num_data += X.shape[0]
         X, y = X.to(DEVICE), y.to(DEVICE)
 
