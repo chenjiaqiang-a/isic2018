@@ -134,7 +134,7 @@ metric_dict = {
 }
 
 _pred_based = ["acc", "accuracy", "balanced_accuracy", "b_acc", "precision",
-               "recall", "confusion_matrix", "c_matrix"]
+               "recall", "f1_score", "confusion_matrix", "c_matrix"]
 
 _prob_based = ["roc_auc", "auc", "roc_curves"]
 

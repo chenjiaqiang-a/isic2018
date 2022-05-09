@@ -81,7 +81,7 @@ VALID_PERIOD = 1
 EARLY_THRESHOLD = 40
 
 loss_fn = nn.CrossEntropyLoss(reduction="none")
-optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
+optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=EPOCHS, eta_min=0)
 
 LOGGER.info(f"Using loss function: {loss_fn}")
@@ -158,6 +158,7 @@ for epoch in range(EPOCHS):
             LOGGER.info("Early Stopped!")
             break
 
+save_model(model, os.path.join(RUN_FOLDER, "models"), RUN_ID + "model-final.pkl")
 pickle.dump({
     "train_loss": train_l,
     "train_acc": train_acc,

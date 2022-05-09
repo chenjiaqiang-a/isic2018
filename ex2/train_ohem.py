@@ -19,7 +19,7 @@ LOGGER = Logger(RUN_FOLDER, RUN_ID)
 LOGGER.info(f"Ex2: ohem {RUN_ID} run by Chen")
 
 # 数据预处理
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 NUM_WORKERS = 4
 train_trans = transforms.Compose([
     transforms.RandomHorizontalFlip(p=0.5),
@@ -76,10 +76,10 @@ WEIGHT_DECAY = 1e-2
 EPOCHS = 100
 VALID_PERIOD = 1
 EARLY_THRESHOLD = 40
-HARD_EXAMPLE_RATE = 1/4
+HARD_EXAMPLE_RATE = 1/2
 
 loss_fn = nn.CrossEntropyLoss(reduction="none")
-optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
+optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=EPOCHS, eta_min=0)
 
 LOGGER.info(f"Using loss function: {loss_fn}")

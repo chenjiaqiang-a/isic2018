@@ -87,7 +87,7 @@ def plot_roc_curves(fpr, tpr, roc_auc, filename="cm.png", categories=None):
     # 绘制全部的ROC曲线
     n_classes = len(fpr) - 2
 
-    plt.figure()
+    plt.figure(facecolor='w')
     plt.plot(fpr["micro"], tpr["micro"],
              label='micro-average ROC curve (area = {0:0.2f})'
                    ''.format(roc_auc["micro"]),
@@ -116,7 +116,7 @@ def plot_roc_curves(fpr, tpr, roc_auc, filename="cm.png", categories=None):
 
 
 def plot_losses(losses, title="", legend=None, filename="losses.png"):
-    plt.figure()
+    plt.figure(facecolor='w')
     for i, l in enumerate(losses):
         plt.plot(l, label=legend[i] if legend else None)
     plt.xlabel("epochs")
