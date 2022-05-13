@@ -59,7 +59,9 @@ class Trainer(object):
 
     def fit(self, model, train_loader, val_loader, criterion, rho: float, freq: int, max_epoch, test_period=5, early_threshold=10):
         size_train = len(train_loader)
+        num_train = len(train_loader.dataset)
         size_val = len(val_loader)
+        num_val = len(val_loader.dataset)
         model.train()
 
         for self.epoch in range(self.epoch, max_epoch):
@@ -83,8 +85,8 @@ class Trainer(object):
                 actual_acc += (yhat == clean_y).sum().item()
 
             self.train_costs.append(cost/size_train)
-            self.train_accs.append(acc/size_train)
-            self.train_actual_accs.append(actual_acc/size_train)
+            self.train_accs.append(acc/num_train)
+            self.train_actual_accs.append(actual_acc/num_train)
             self.scheduler.step()
 
             gc.collect()
@@ -104,8 +106,8 @@ class Trainer(object):
                         noisy_acc += (yhat == noisy_y).sum().item()
 
                 self.val_costs.append(cost/size_val)
-                self.val_accs.append(noisy_acc/size_val)
-                self.val_actual_accs.append(acc/size_val)
+                self.val_accs.append(noisy_acc/num_val)
+                self.val_actual_accs.append(acc/num_val)
 
                 if self.val_actual_accs[-1] >= self.best_score:
                     self.best_score = self.val_actual_accs[-1]
@@ -117,7 +119,7 @@ class Trainer(object):
                     if self.patience >= early_threshold:
                         break
 
-                self.log.logger.info("Epoch:{:3d} train_cost: {:.4f}\ttrain_acc: {:.4f}\ttactual_acc: {:.4f}\tval_cost: {:.4f}\tval_acc: {:.4f}\tvactual_acc: {:.4f}".format(
+                self.log.logger.info("Epoch:{:3d} train_cost: {:.4f}\ttrain_acc: {:.4f}\ta_acc: {:.4f}\tval_cost: {:.4f}\tval_acc: {:.4f}\tva_acc: {:.4f}".format(
                     self.epoch+1, self.train_costs[-1], self.train_accs[-1], self.train_actual_accs[-1], self.val_costs[-1], self.val_accs[-1], self.val_actual_accs[-1]))
 
                 model.train()

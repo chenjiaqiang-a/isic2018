@@ -1,10 +1,12 @@
 import torch
 from torch.utils import data
-from PIL import Image
+from PIL import Image, ImageFile
 import os
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 import pandas as pd
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 class NoisyISIC2018(data.Dataset):
