@@ -1,3 +1,4 @@
+import torch
 from torch.utils import data
 from PIL import Image
 import os
@@ -42,7 +43,7 @@ class NoisyISIC2018(data.Dataset):
         df['label'] = df.select_dtypes(['number']).idxmax(axis=1)
         df['label'] = df['label'].apply(lambda x: self.class_dict[x])
         img_ids = list(df['image'])
-        labels = np.array(list(df['label']))
+        labels = np.array(list(df['label']), dtype=np.int64)
         return img_ids, labels
 
     def __getitem__(self, idx):

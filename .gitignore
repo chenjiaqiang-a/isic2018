@@ -6,6 +6,11 @@ data/ISIC2018/
 *.pkl
 *.pth
 
+# exp
+checkpoint/
+logs/
+model/
+
 # IDE
 .idea/
 .vscode/
