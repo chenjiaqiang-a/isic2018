@@ -9,8 +9,9 @@ def evaluation(model, data_loader, categories=['MEL', 'NV', 'BCC', 'AKIEC', 'BKL
     y, prob, label, pred = predict(model, data_loader)
     report = metrics.classification_report(label, pred, target_names=categories, digits=3)
     roc_auc = auc_scores(y, prob)
-    print("Evaluation Report:\n{}".format(report))
-    print("AUC:\n{}".format(roc_auc))
+    report = "Evaluation Report:\n{}".format(report)
+    report += "\nAUC: {}".format(roc_auc)
+    return report
 
 
 @torch.no_grad()

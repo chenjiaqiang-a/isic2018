@@ -7,7 +7,6 @@ __all__ = ["get_config", "generate_data"]
 
 
 CLASS_NUM = 7
-tau, p, lamb, rho, freq = 0.5, 0.01, 5, 1.002, 1
 # TAU, P, LAMB, RHO, FREQ = 0.5, 0.01, 5, 1.002, 1
 
 
@@ -15,6 +14,7 @@ class_weight = [1 for _ in range(CLASS_NUM)]
 
 
 def get_config(exp_id: str):
+    tau, p, lamb, rho, freq = 0.5, 0.01, 5, 1.002, 1
     loss_id, noise_id = exp_id.split('-')
     
     # configure loss
@@ -30,16 +30,22 @@ def get_config(exp_id: str):
         raise ValueError("Experiment ID doesn't exist")
 
     # configure noisy labels
-    if noise_id == '1':
+    noise_id = int(noise_id)
+    if noise_id % 2 == 0:
+        noise_type = 'asymmetric'
+    else:
+        noise_type = 'symmetric'
+        
+    if noise_id // 2 == 0:
         noise_rate = 0
-    elif noise_id == '2':
+    elif noise_id // 2 == 1:
         noise_rate = .1
-    elif noise_id == '3':
+    elif noise_id // 2 == 2:
         noise_rate = .4
     else:
         raise ValueError("Experiment ID doesn't exist")
 
-    return criterion, noise_rate, rho, freq
+    return criterion, noise_type, noise_rate, rho, freq
 
 
 # transforms
@@ -62,23 +68,23 @@ trans_test = transforms.Compose([
 ])
 
 
-def generate_data(mode, noise_rate, batch_size, num_workers, random_seed):
+def generate_data(mode, noise_type, noise_rate, batch_size, num_workers, random_seed):
     if mode == 'train':
         train_data = NoisyISIC2018(ann_file='../../Robust-Skin-Lesion-Diagnosis/Data/2018/Train_GroundTruth.csv',
                                 img_dir='../../Robust-Skin-Lesion-Diagnosis/Data/2018/ISIC2018_Task3_Training_Input',
-                                transform=trans_train, noise_type='asymmetric', noise_rate=noise_rate, random_state=random_seed)
+                                transform=trans_train, noise_type=noise_type, noise_rate=noise_rate, random_state=random_seed)
         data_loader = data.DataLoader(train_data, batch_size=batch_size, shuffle=True, drop_last=True, num_workers=num_workers)
 
     elif mode == 'test':
         test_data = NoisyISIC2018(ann_file='../../Robust-Skin-Lesion-Diagnosis/Data/2018/Test_GroundTruth.csv',
                                 img_dir='../../Robust-Skin-Lesion-Diagnosis/Data/2018/ISIC2018_Task3_Training_Input',
-                                transform=trans_test, noise_type='symmetric', noise_rate=noise_rate, random_state=random_seed)
+                                transform=trans_test, noise_type=noise_type, noise_rate=noise_rate, random_state=random_seed)
         data_loader = data.DataLoader(test_data, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     
     elif mode == 'valid':
         valid_data = NoisyISIC2018(ann_file='../../Robust-Skin-Lesion-Diagnosis/Data/2018/ISIC2018_Task3_Validation_GroundTruth.csv',
                                 img_dir='../../Robust-Skin-Lesion-Diagnosis/Data/2018/ISIC2018_Task3_Validation_Input',
-                                transform=trans_test, noise_type='symmetric', noise_rate=noise_rate, random_state=random_seed)
+                                transform=trans_test, noise_type=noise_type, noise_rate=noise_rate, random_state=random_seed)
         data_loader = data.DataLoader(valid_data, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
     return data_loader

@@ -70,6 +70,49 @@ class NCELoss(nn.Module):
         label_one_hot = F.one_hot(labels, self.num_classes).float().to(pred.device)
         loss = -1 * torch.sum(label_one_hot * pred, dim=1) / (-pred.sum(dim=1))
         return self.scale * loss.mean()
+    
+    
+    
+class WeightedCELoss(nn.Module):
+    def __init__(self, num_classes=CLASS_NUM, reduction='mean'):
+        super(WeightedCELoss, self).__init__()
+        self.num_classes = num_classes
+        self.reduction = reduction
+
+    def forward(self, pred: torch.Tensor, labels: torch.Tensor, sample_weight: torch.Tensor):
+        """w * y * log(p)
+
+        Args:
+            pred (torch.Tensor): 网络输出值
+            labels (torch.Tensor): 标签
+            sample_weight (torch.Tensor): 逐样本权重
+
+        Shape:
+            pred: N, C
+            label: N
+            sample_weight: N
+
+        Returns:
+            tensor.float: 逐样本赋权的损失值
+        """
+
+        pred = F.log_softmax(pred, dim=1)                                           # N, C
+        label_one_hot = F.one_hot(labels, self.num_classes).float().to(pred.device) # C -> N, C
+        loss = label_one_hot * pred                                                 # N, C
+        # 赋权
+        loss = - 1 * torch.sum(label_one_hot * pred, dim=1) * sample_weight          # N
+        
+        # 规约
+        if self.reduction == 'mean':
+            loss = loss.mean()
+        elif self.reduction == 'sum':
+            loss = loss.sum()
+        else:
+            raise ValueError('Unsupported reduction type.')
+
+        return loss
+    
+    
 
 class MAELoss(nn.Module):
     def __init__(self, num_classes=CLASS_NUM, scale=2.0):

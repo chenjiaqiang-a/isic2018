@@ -49,11 +49,11 @@ log = Logger(mode='exp', title=exp_id)
 log.logger.info("{} | Batch Size: {}, Seed: {}".format(model_name, args.batch_size, args.seed))
 
 # Experiment Setting
-criterion, noise_rate, rho, freq = get_config(exp_id)
+criterion, noise_type, noise_rate, rho, freq = get_config(exp_id)
 
 # Dataset
-train_loader = generate_data('train', noise_rate, args.batch_size, args.num_workers, args.seed)
-valid_loader = generate_data('valid', noise_rate, args.batch_size*2, args.num_workers, args.seed)
+train_loader = generate_data('train', noise_type, noise_rate, args.batch_size, args.num_workers, args.seed)
+valid_loader = generate_data('valid', noise_type, noise_rate, args.batch_size*2, args.num_workers, args.seed)
 
 
 # Model
@@ -82,11 +82,20 @@ optimizer = optim.AdamW(model.classifier.parameters(), lr=init_lr, betas=(0.9, 0
 scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max_epoch, eta_min=0)
 # scheduler = StepLR(optimizer, gamma=0.1, step_size=25)
 
-trainer = Trainer(device, log, model_name, optimizer, scheduler, checkpoint_model=None)
+if args.checked == 1:
+    trainer = Trainer(device, log, model_name, optimizer, scheduler, checkpoint_model=model)
+else:
+    trainer = Trainer(device, log, model_name, optimizer, scheduler, checkpoint_model=None)
 
+history = trainer.fit(model, train_loader, valid_loader, criterion, rho, freq, max_epoch, test_period, early_threshold)
+history = trainer.fit(model, train_loader, valid_loader, criterion, rho, freq, 10, test_period, early_threshold)
+# unfreeze layers
+for param in model.parameters():
+    param.requires_grad = True
 history = trainer.fit(model, train_loader, valid_loader, criterion, rho, freq, max_epoch, test_period, early_threshold)
 log.logger.info(history)
 
-test_loader = generate_data('test', noise_rate, args.batch_size*2, args.num_workers, args.seed)
+
+test_loader = generate_data('test', noise_type, noise_rate, args.batch_size*2, args.num_workers, args.seed)
 
 log.logger.info(evaluation(model, test_loader))
