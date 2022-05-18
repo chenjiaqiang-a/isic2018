@@ -1,4 +1,3 @@
-import torch
 from torch.utils import data
 from PIL import Image, ImageFile
 import os
@@ -138,7 +137,7 @@ def noisify_symmetric(y, noise_rate, random_state=123, nb_classes=7):
 
 
 def noisify_asymmetric(y, noise_rate, random_state=123):
-    r""" noisify labels in an asymmetric way: 𝑁𝑉 <-> 𝑀𝐸𝐿, 𝐵𝐶𝐶 <-> 𝐵𝐾𝐿, 𝑉𝐴𝑆𝐶 <-> 𝐷𝐹,
+    r""" noisify labels in an asymmetric way: 𝑁𝑉 <-> 𝑀𝐸𝐿, 𝐵𝐶𝐶 <-> 𝐵𝐾𝐿, 𝑉𝐴𝑆𝐶 <-> 𝐷𝐹, 𝐴𝐾𝐼𝐸𝐶 <-> 𝐷𝐹 
         {'MEL': 0, 'NV': 1, 'BCC': 2, 'AKIEC': 3, 'BKL': 4, 'DF': 5, 'VASC': 6}
     """
     P = np.eye(7)

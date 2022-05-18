@@ -14,7 +14,7 @@ class_weight = [1 for _ in range(CLASS_NUM)]
 
 
 def get_config(exp_id: str):
-    tau, p, lamb, rho, freq = 0.5, 0.01, 5, 1.002, 1
+    tau, p, lamb, rho, freq = 0.5, 0.1, 5, 1.005, 1
     loss_id, noise_id = exp_id.split('-')
     
     # configure loss

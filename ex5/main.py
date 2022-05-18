@@ -8,14 +8,15 @@ from collections import OrderedDict
 import random
 from config import *
 from noise.logger import Logger
-from noise.train import Trainer
+from noise.train import Trainer, load_state_dict
 from noise.evaluation import evaluation
 
 
-
+# Argparse
 parser = argparse.ArgumentParser(description='Robust Learning via Sparse Regularization')
 parser.add_argument('--exp_id', type=str, default='1-1', help='Experiment ID')
 parser.add_argument('--model_id', type=int, default=1, help='Model ID of the experiment')
+parser.add_argument('--message', type=str, default='')
 # learning settings
 parser.add_argument('--batch_size', type=int, default=64, help='batch size')
 parser.add_argument('--num_workers', type=int, default=0, help='the number of worker for loading data')
@@ -46,7 +47,7 @@ model_id = args.model_id
 exp_id = args.exp_id
 model_name = exp_id + '-' + str(model_id)
 log = Logger(mode='exp', title=exp_id)
-log.logger.info("{} | Batch Size: {}, Seed: {}".format(model_name, args.batch_size, args.seed))
+log.logger.info("{} | {} | Batch Size: {}, Seed: {}".format(model_name, args.message, args.batch_size, args.seed))
 
 # Experiment Setting
 criterion, noise_type, noise_rate, rho, freq = get_config(exp_id)
@@ -87,15 +88,18 @@ if args.checked == 1:
 else:
     trainer = Trainer(device, log, model_name, optimizer, scheduler, checkpoint_model=None)
 
-history = trainer.fit(model, train_loader, valid_loader, criterion, rho, freq, max_epoch, test_period, early_threshold)
+
 history = trainer.fit(model, train_loader, valid_loader, criterion, rho, freq, 10, test_period, early_threshold)
 # unfreeze layers
 for param in model.parameters():
     param.requires_grad = True
 history = trainer.fit(model, train_loader, valid_loader, criterion, rho, freq, max_epoch, test_period, early_threshold)
-log.logger.info(history)
 
 
+# Evaluation
 test_loader = generate_data('test', noise_type, noise_rate, args.batch_size*2, args.num_workers, args.seed)
+log.logger.info(evaluation(model, test_loader))
 
+log.logger.info('Best Model')
+model = load_state_dict(model, device, name='{}_dict.pth'.format(trainer.model_name))
 log.logger.info(evaluation(model, test_loader))

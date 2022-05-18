@@ -6,6 +6,11 @@ from sklearn.preprocessing import label_binarize
 
 
 def evaluation(model, data_loader, categories=['MEL', 'NV', 'BCC', 'AKIEC', 'BKL', 'DF', 'VASC']):
+    """ Generate evaluation report
+
+    Returns:
+        Summary on acc, recall, precision, f1-score, AUC
+    """
     y, prob, label, pred = predict(model, data_loader)
     report = metrics.classification_report(label, pred, target_names=categories, digits=3)
     roc_auc = auc_scores(y, prob)
@@ -16,7 +21,7 @@ def evaluation(model, data_loader, categories=['MEL', 'NV', 'BCC', 'AKIEC', 'BKL
 
 @torch.no_grad()
 def predict(model, data_loader):
-    """ get predicted probabilities
+    """ Get predicted probabilities
 
     Returns:
         y: one-hot labels

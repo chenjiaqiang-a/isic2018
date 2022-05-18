@@ -5,7 +5,7 @@ import gc
 
 class Trainer(object):
     def __init__(self, device, log, model_name: str, optimizer=None, scheduler=None, grad_bound: float = 5., start_epoch: int = 0, best_score=0, checkpoint_model=None):
-        """ trainer for segmentation tasks
+        """ Model trainer, checkpoint is partly supported for training on EDUCG
 
         Args:
             device (torch.device)
@@ -16,7 +16,7 @@ class Trainer(object):
             grad_bound (float): max norm of the gradients
             start_epoch (int): initial epoch
             best_score (float): metric score for early stopping
-            checkpoint_model (None or nn.Module): None - train from scratch; nn.Module - reload from checkpoint
+            checkpoint_model (None or nn.Module): None - train from scratch; nn.Module - reload from checkpoint, params in SR should be checked manually.
         """
         self.device = device
         self.log = log
@@ -129,6 +129,7 @@ class Trainer(object):
             # Adapt params of SR
             if freq != 0 and (self.epoch + 1) % freq == 0:
                 criterion.lamb *= rho
+                # criterion.tau *= 1.001
 
         save_model(model, name=self.model_name+'.pkl')
         history = self.get_history()
