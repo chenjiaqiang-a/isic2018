@@ -32,6 +32,7 @@
 +---ex2     		# 实验2相关代码
 +---ex3     		# 实验3相关代码
 +---ex4_and_ex5		# 实验4、5相关代码
++---ex6     		# 实验6相关代码
 \---demo.py			# 训练示例
 ```
 
@@ -70,6 +71,8 @@ wget https://isic-challenge-data.s3.amazonaws.com/2018/ISIC2018_Task3_Test_Input
 3. 脏标签
    - ex4
    - ex5：使用稀疏正则化进行脏标签数据集的鲁棒学习
+4. 脆弱性
+   - ex6：测试网络在随机扰动、白盒对抗攻击下的性能
 
 ### Tips
 
