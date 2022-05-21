@@ -66,7 +66,7 @@ wget https://isic-challenge-data.s3.amazonaws.com/2018/ISIC2018_Task3_Test_Input
    - ex1
 2. 类别倾斜
    - ex2: 尝试使用在线难样本挖掘（OHEM）解决类别倾斜的问题
-   - ex3
+   - ex3: 尝试使用focal loss解决样本不均衡问题
 3. 脏标签
    - ex4
    - ex5：使用稀疏正则化进行脏标签数据集的鲁棒学习
